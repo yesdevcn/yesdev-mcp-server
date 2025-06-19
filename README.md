@@ -1,15 +1,57 @@
 # YesDev MCP Server
 
-这是一个基于 [Model Context Protocol (MCP)](https://github.com/cursor-ai/model-context-protocol) 规范实现的服务器，用于集成 [YesDev项目管理工具](https://www.yesdev.cn/) 的任务管理功能。
+**定位：一款专为程序员自动登记每日开发工时的开源MCP工具，可以用在Cursor、VSCode等！**  
 
-## 功能特性
+基于 [YesDev项目管理工具](https://www.yesdev.cn/) ，进行我的任务工时的登记和AI管理。重点解决两大矛盾： 
 
-- 完整实现 MCP 服务器规范
-- 支持 YesDev 任务管理功能
-- 使用标准输入输出通信（StdioServerTransport）
-- 内置错误处理和日志记录
+ + 开发工程师忙于编程没空登记工时，而项目经理需要及时的工时投入和项目进度！  
+ + 企业老板或管理层想看到更真实、客观的开发工时，而“总”不相信人工填充的工时！    
 
-## 系统要求
+## 核心功能特性
+
+- 任务管理：
+  - 通过聊天方式，让AI帮你（程序员）自动根据当天开发登记任务和工时；
+  - 快速查看和整理我当前的任务计划、待办工作清单；
+- 需求管理：
+  - 快速查看我目前的开发需求列表；
+- 缺陷管理： 
+  - 快速查看我目前的Bug、工单和其他待处理的问题列表；
+- 日报：
+  - AI自动汇总填写上报你（程序员）当天的日报；
+
+## 如何使用？
+
+免费注册 [YesDev项目管理工具](https://www.yesdev.cn/) 后 [获取你的YESDEV_ACCESS_TOKEN令牌](https://www.yesdev.cn/platform/account/accountInfo)。
+
+
+### Cursor MCP 配置
+
+在 Cursor 的配置中添加以下内容：
+
+```json
+{
+  "mcpServers": {
+    "yesdev-mcp-server": {
+      "command": "node",
+      "args": ["/path/to/yesdev-mcp-server/dist/index.js"],
+      "env": {
+        "YESDEV_ACCESS_TOKEN": "你的YesDev令牌"
+      }
+    }
+  }
+}
+```
+
+### 常用提示词
+
+常用的提示词参考：  
+ + 请帮我创建一个新任务，并登记我今天的开发任务内容和工时到YesDev  
+ + 我今天有哪些YesDev任务？
+ + 帮我写日报到YesDev
+
+## MCP开发
+
+### 本地开发环境要求
 
 - Node.js >= 18.0.0
 - npm 或 yarn 包管理器
@@ -19,7 +61,7 @@
 1. 克隆仓库：
 
 ```bash
-git clone [repository-url]
+git clone https://github.com/yesdevcn/yesdev-mcp-server.git
 cd yesdev-mcp-server
 ```
 
@@ -91,98 +133,14 @@ YesDev MCP Server 已启动
 ]
 ```
 
-## Cursor MCP 配置
-
-在 Cursor 的配置中添加以下内容：
-
-```json
-{
-  "mcpServers": {
-    "yesdev-mcp-server": {
-      "command": "node",
-      "args": ["/path/to/yesdev-mcp-server/dist/index.js"],
-      "env": {
-        "YESDEV_ACCESS_TOKEN": "你的YesDev令牌"
-      }
-    }
-  }
-}
-```
 
 ## 已实现的工具
 
-### 1. create_task
-创建新任务
-- **输入参数**：
-  - `task_title`: string - 任务标题
-  - `staff_id`: string - 负责人ID
-  - `task_desc?`: string - 任务描述（可选）
-  - `task_type?`: number - 任务类型（可选）
-  - `task_time?`: number - 任务工时（可选）
-  - `task_finish_time?`: string - 任务截止时间（可选）
-  - `plan_start_date?`: string - 计划开始时间（可选）
-  - `task_status?`: number - 任务状态（可选）
-  - `is_milestone?`: number - 是否里程碑（可选）
-  - `not_send_email?`: number - 是否发送邮件（可选）
-  - `project_id?`: number - 项目ID（可选）
-  - `need_id?`: number - 需求ID（可选）
-  - `problem_id?`: number - 问题ID（可选）
-- **返回**：创建的任务ID
-
-### 2. get_task_detail
-获取任务详情
-- **输入参数**：
-  - `id`: string - 任务ID
-- **返回**：任务详细信息
-
-### 3. update_task
-更新任务信息
-- **输入参数**：
-  - `id`: string - 任务ID
-  - `title?`: string - 任务标题（可选）
-  - `description?`: string - 任务描述（可选）
-  - `assignee?`: string - 负责人ID（可选）
-  - `status?`: number - 任务状态（可选）
-  - `priority?`: number - 优先级（可选）
-- **返回**：更新后的任务信息
-
-### 4. remove_task
-删除任务
-- **输入参数**：
-  - `id`: string - 任务ID
-- **返回**：操作结果
-
-### 5. get_task_list
-获取任务列表
-- **输入参数**：
-  - `page?`: number - 页码（可选）
-  - `page_size?`: number - 每页数量（可选）
-  - `status?`: number - 任务状态（可选）
-  - `assignee?`: string - 负责人ID（可选）
-- **返回**：任务列表和总数
-
-### 6. check_task
-任务验收
-- **输入参数**：
-  - `id`: string - 任务ID
-  - `comment?`: string - 验收评论（可选）
-- **返回**：操作结果
-
-### 7. revoke_check_task
-撤销任务验收
-- **输入参数**：
-  - `id`: string - 任务ID
-  - `reason?`: string - 撤销原因（可选）
-- **返回**：操作结果
-
-### 8. ai_guess_work_hour
-AI预估任务工时
-- **输入参数**：
-  - `title`: string - 任务标题
-  - `description?`: string - 任务描述（可选）
-- **返回**：
-  - `work_hour`: number - 预估工时
-  - `confidence`: number - 预估置信度
+### 1. create_task 创建新任务
+### 2. get_task_detail 获取任务详情
+### 3. update_task 更新任务信息
+### 4. remove_task 删除任务
+### 5. get_task_list 获取任务列表
 
 ## 相关项目
 

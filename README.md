@@ -136,14 +136,17 @@ YesDev MCP Server 已启动
 
 ## 已实现的工具
 
-### 1. create_task 创建新任务
-### 2. get_task_detail 获取任务详情
-### 3. update_task 更新任务信息
-### 4. remove_task 删除任务
-### 5. get_task_list 获取任务列表
+你可以根据自己、团队和公司的需要，结合[YesDev API 接口文档](https://www.yesdev.cn/docs.php)，扩展更多任务工时MCP工具。  
+
+已实现的工具有：  
+
+ + create_task 创建新任务
+ + get_task_detail 获取任务详情
+ + update_task 更新任务信息
+ + remove_task 删除任务
+ + get_task_list 获取任务列表
 
 ## 相关项目
 
 - [MCP TS-sdk](https://github.com/modelcontextprotocol/typescript-sdk)
-- [YesDev API 接口文档](https://www.yesdev.cn/docs.php)
 - [Model Context Protocol](https://github.com/modelcontextprotocol/modelcontextprotocol)

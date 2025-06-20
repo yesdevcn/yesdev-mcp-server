@@ -62,7 +62,7 @@ class YesDevAPIImpl implements YesDevAPI {
         throw new Error(response.data.msg || '请求失败');
       }
 
-      return response.data.data;
+      return response.data as T;
     } catch (error: any) {
       console.error('API Error:', {
         error: error.message,
@@ -119,8 +119,7 @@ class YesDevAPIImpl implements YesDevAPI {
 
   // 全局相关
   async getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>> {
-    const response = await this.request('POST', 'Platform.Setting_Setting.Start', params);
-    return response as YesDevResponse<GlobalConfig>;
+    return this.request<YesDevResponse<GlobalConfig>>('POST', 'Platform.Setting_Setting.Start', params);
   }
 }
 

@@ -17,7 +17,7 @@ class ConfigManager {
                 this.initialized = true;
                 console.log('YesDev 全局配置已成功初始化！');
             } else {
-                console.error('初始化YesDev全局配置失败:', response.msg);
+                console.error('初始化YesDev全局配置失败:', response);
                 // 在生产环境中可能需要更健壮的错误处理，例如重试或退出
             }
         } catch (error) {

@@ -18,13 +18,13 @@ async function main() {
         version: '1.0.0',
     });
     
-    const transport = new StdioServerTransport();
-    server.connect(transport);
-
     console.log('正在注册工具...');
     const taskTools = registerTaskTools(server);
     const projectTools = registerProjectTools(server);
     const allTools = new Set([...taskTools, ...projectTools]);
+
+    const transport = new StdioServerTransport();
+    server.connect(transport);
     
     console.log('YesDev MCP Server 已启动');
     console.log('已注册的工具:', Array.from(allTools));

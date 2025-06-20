@@ -146,10 +146,15 @@ export interface ProjectResponse {
   add_time: string;
 }
 
+export interface MyProjectListParams {
+  is_merge_project_set?: number;
+}
+
 export interface MyProjectListResponse {
   project_list: {
       id: number;
       project_name: string;
+      workgroup_id: number;
   }[];
 }
 
@@ -229,7 +234,7 @@ export interface YesDevAPI {
   updateProjectStatus(params: UpdateProjectStatusParams): Promise<YesDevResponse<void>>;
   updateProjectPart(params: UpdateProjectParams): Promise<YesDevResponse<void>>;
   updateProjectTime(params: UpdateProjectTimeParams): Promise<YesDevResponse<void>>;
-  getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>>;
+  getMyProjectList(params: MyProjectListParams): Promise<YesDevResponse<MyProjectListResponse>>;
   getProjectList(params: ProjectListParams): Promise<YesDevResponse<ProjectListResponse>>;
 
   // 全局相关

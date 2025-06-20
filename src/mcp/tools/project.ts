@@ -16,7 +16,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
     },
     async () => {
       try {
-        const result = await yesdevAPI.getMyProjectList();
+        const result = await yesdevAPI.getMyProjectList({ is_merge_project_set: 0 });
 
         if (result.ret !== 200 || !result.data) {
           return {
@@ -37,7 +37,10 @@ export function registerProjectTools(server: McpServer): Set<string> {
 
         let responseText = '### 🚀 你的项目列表\n\n';
 
-        responseText += project_list.map(p => `- [${p.id}] ${p.project_name}`).join('\n');
+        responseText += project_list.filter(p => p.workgroup_id >= 0).map(p => {
+          const link = `https://www.yesdev.cn/platform/project/projects-detail?id=${p.id}`;
+          return `- [${p.project_name}](${link})`;
+        }).join('\n');
 
         return {
           content: [{

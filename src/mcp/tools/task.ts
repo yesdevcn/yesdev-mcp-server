@@ -298,6 +298,7 @@ export function registerTaskTools(server: McpServer): Set<string> {
       end_plan_start_date?: string;
       start_actual_finish_date?: string;
       end_actual_finish_date?: string;
+      is_merge_project_set?: number;
     }) => {
       try {
         const result = await yesdevAPI.queryTasks({

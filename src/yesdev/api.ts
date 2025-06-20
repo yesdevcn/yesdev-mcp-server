@@ -15,6 +15,7 @@ import type {
   QueryTasksParams,
   TaskListResponse,
   GlobalConfig,
+  MyProjectListParams,
   MyProjectListResponse,
   ProjectDetailParams,
   UpdateProjectParams,
@@ -149,7 +150,7 @@ class YesDevAPIImpl implements YesDevAPI {
   }
 
   // 6. 获取我的项目列表
-  async getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>> {
+  async getMyProjectList(params: MyProjectListParams): Promise<YesDevResponse<MyProjectListResponse>> {
     return this.request<YesDevResponse<MyProjectListResponse>>('POST', 'Platform.Projects.GetProjectLeftSideMenu');
   }
 

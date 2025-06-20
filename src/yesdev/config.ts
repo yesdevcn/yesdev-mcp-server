@@ -48,6 +48,14 @@ class ConfigManager {
         }
         return '其他';
     }
+
+    public getProjectStatusName(statusValue: number): string {
+        const projectStatus = this.getConstant('PROJECT_STATUS');
+        if (projectStatus && projectStatus[statusValue]) {
+            return projectStatus[statusValue].name;
+        }
+        return '未知状态';
+    }
 }
 
 const configManager = new ConfigManager();

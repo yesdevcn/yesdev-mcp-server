@@ -140,11 +140,30 @@ export interface ProjectResponse {
   project_end_time: string | null;
   charge_staff_name: string;
   project_desc: string;
+  charge_staff_id: number;
+  created_staff_name: string;
+  created_time: string;
 }
 
 export interface MyProjectListResponse {
-    my_project: ProjectResponse[];
-    join_project: ProjectResponse[];
+  items: {
+      id: number;
+      project_name: string;
+  }[];
+}
+
+export interface ProjectDetailParams {
+  id: number;
+}
+
+export interface UpdateProjectParams {
+  id: number;
+  project_name?: string;
+  project_desc?: string;
+  charge_staff_id?: number;
+  project_start_time?: string;
+  project_end_time?: string;
+  project_status?: number;
 }
 
 export interface YesDevAPI {
@@ -159,6 +178,8 @@ export interface YesDevAPI {
   
   // 项目相关
   getMyProjectList(params: void): Promise<YesDevResponse<MyProjectListResponse>>;
+  getProjectDetail(params: ProjectDetailParams): Promise<YesDevResponse<ProjectResponse>>;
+  updateProject(params: UpdateProjectParams): Promise<YesDevResponse<void>>;
 
   // 全局相关
   getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>>;
@@ -190,6 +211,7 @@ export interface GlobalConfig {
         PROBLEM_ATTRIBUTION: ConstantData;
         NEED_STATUS: ConstantData;
         NEED_LEVEL: ConstantData;
+        PROJECT_STATUS: ConstantData;
         [key: string]: ConstantData;
     };
     ai: any;

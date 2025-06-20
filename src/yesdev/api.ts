@@ -116,16 +116,39 @@ class YesDevAPIImpl implements YesDevAPI {
   }
 
   // 项目相关
-  async getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>> {
-    return this.request<YesDevResponse<MyProjectListResponse>>('POST', 'Platform.Projects.GetProjectLeftSideMenu');
+  // 1. 创建新项目
+  async createProject(params: CreateProjectParams): Promise<YesDevResponse<ProjectAddResponse>> {
+    return this.request<YesDevResponse<ProjectAddResponse>>('POST', 'Platform.Projects.CreateNewProject', params);
   }
 
+  // 2. 获取项目详情
   async getProjectDetail(params: ProjectDetailParams): Promise<YesDevResponse<ProjectResponse>> {
     return this.request<YesDevResponse<ProjectResponse>>('POST', 'Platform.Projects.GetProjectDetail', params);
   }
 
-  async updateProject(params: UpdateProjectParams): Promise<YesDevResponse<void>> {
+  // 3. 更新项目状态
+  async updateProjectStatus(params: UpdateProjectStatusParams): Promise<YesDevResponse<void>> {
+    return this.request<YesDevResponse<void>>('POST', 'Platform.Projects.UpdateProjectStatus', params);
+  }
+
+  // 4. 更新项目-局部更新
+  async updateProjectPart(params: UpdateProjectParams): Promise<YesDevResponse<void>> {
     return this.request<YesDevResponse<void>>('POST', 'Platform.Projects.UpdateProjectPart', params);
+  }
+
+  // 5. 单独更新项目时间接口
+  async updateProjectTime(params: UpdateProjectTimeParams): Promise<YesDevResponse<void>> { 
+    return this.request<YesDevResponse<void>>('POST', 'Platform.Projects.UpdateProjectTime', params);
+  }
+
+  // 6. 获取我的项目列表
+  async getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>> {
+    return this.request<YesDevResponse<MyProjectListResponse>>('POST', 'Platform.Projects.GetProjectLeftSideMenu');
+  }
+
+  // 7. 获取全部项目列表
+  async getProjectList(params: ProjectListParams): Promise<YesDevResponse<ProjectListResponse>> {
+    return this.request<YesDevResponse<ProjectListResponse>>('POST', 'Platform.Projects.GetProjectList', params);
   }
 
   // 全局相关

@@ -241,7 +241,7 @@ export function registerTaskTools(server: McpServer): Set<string> {
     'query_tasks',
     {
       title: '查询任务列表',
-      description: '根据多种条件查询任务列表',
+      description: '根据多种条件查询任务列表，支持筛选、搜索、排序',
       inputSchema: {
         staff_ids: z.string().optional().describe('负责人ID，多个用逗号隔开'),
         project_id: z.number().optional().describe('项目ID'),

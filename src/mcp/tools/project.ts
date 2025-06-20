@@ -208,7 +208,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
         description: '更新指定ID的项目的状态',
         inputSchema: {
             id: z.number().describe('项目ID'),
-            project_status: z.number().describe('新的项目状态'),
+            project_status: z.number().describe('新的项目状态，0新项目1进行中2已完成3挂起'),
         }
     },
     async (args) => {
@@ -268,19 +268,19 @@ export function registerProjectTools(server: McpServer): Set<string> {
     'get_project_list',
     {
         title: '获取全部项目列表',
-        description: '获取全部项目列表，支持筛选',
+        description: '获取全部项目列表，支持筛选、搜索、排序',
         inputSchema: {
             id: z.number().optional().describe('项目ID'),
             project_name: z.string().optional().describe('项目名称关键字'),
             charge_staff_name: z.string().optional().describe('项目负责人名称'),
-            project_status: z.string().optional().describe('项目状态，多个用逗号隔开'),
-            page: z.number().optional().describe('页码'),
-            perpage: z.number().optional().describe('每页数量'),
-            order_status: z.number().optional().describe('排序状态'),
-            order_status_sort: z.number().optional().describe('排序顺序'),
-            project_start_time: z.string().optional().describe('计划开始时间'),
-            project_end_time: z.string().optional().describe('计划完成时间'),
-            charge_staff_id: z.string().optional().describe('项目负责人ID'),
+            project_status: z.string().optional().describe('项目状态，多个用逗号隔开，0规划中1进行中2已完成3挂起'),
+            page: z.number().optional().default(1).describe('页码，默认1'),
+            perpage: z.number().optional().default(20).describe('每页数量，默认20'),
+            order_status: z.number().optional().default(0).describe('排序方式：0 开始时间，1完成时间 2状态 3项目总工时 4最后更新 5创建时间 6项目进度'),
+            order_status_sort: z.number().optional().default(0).describe('排序顺序，0降序1升序'),
+            project_start_time: z.string().optional().describe('项目计划开始时间，格式：YYYY-MM-DD'),
+            project_end_time: z.string().optional().describe('项目计划完成时间，格式：YYYY-MM-DD'),
+            charge_staff_id: z.string().optional().describe('项目负责人ID，多个使用英文逗号分隔'),
         }
     },
     async (args) => {
@@ -301,7 +301,8 @@ export function registerProjectTools(server: McpServer): Set<string> {
             let responseText = `### 项目列表 (共 ${total} 个)\n\n`;
             responseText += projects.map(p => {
                 const status = configManager.getProjectStatusName(p.project_status);
-                return `- [${p.id}] ${p.project_name} (负责人: ${p.charge_staff_name}, 状态: ${status})`;
+                const link = `https://www.yesdev.cn/platform/project/projects-detail?id=${p.id}`;
+                return `- [${p.project_name}](${link}) (负责人: ${p.charge_staff_name}, 状态: ${status})`;
             }).join('\n');
 
             return { content: [{ type: 'text', text: responseText.trim() }] };

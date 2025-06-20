@@ -120,7 +120,6 @@ export interface TaskListResponse {
 
 export interface ProjectTaskListParams {
   project_id: number;
-  task_list_type?: string;
   task_status?: string;
   is_milestone?: string;
   page?: number;
@@ -130,6 +129,22 @@ export interface ProjectTaskListParams {
 export interface ProjectTaskListResponse {
   total: number;
   task_list: TaskResponse[];
+}
+
+// 项目相关类型
+export interface ProjectResponse {
+  id: number;
+  project_name: string;
+  project_status: number;
+  project_start_time: string | null;
+  project_end_time: string | null;
+  charge_staff_name: string;
+  project_desc: string;
+}
+
+export interface MyProjectListResponse {
+    my_project: ProjectResponse[];
+    join_project: ProjectResponse[];
 }
 
 export interface YesDevAPI {
@@ -142,6 +157,9 @@ export interface YesDevAPI {
   getMyTaskList(params: void): Promise<YesDevResponse<MyTaskListResponse>>;
   getProjectTaskList(params: ProjectTaskListParams): Promise<YesDevResponse<ProjectTaskListResponse>>;
   
+  // 项目相关
+  getMyProjectList(params: void): Promise<YesDevResponse<MyProjectListResponse>>;
+
   // 全局相关
   getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>>;
 }

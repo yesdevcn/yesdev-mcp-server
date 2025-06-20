@@ -14,7 +14,8 @@ import type {
   UpdateTaskParams,
   QueryTasksParams,
   TaskListResponse,
-  GlobalConfig
+  GlobalConfig,
+  MyProjectListResponse
 } from './types.js';
 
 dotenv.config();
@@ -111,7 +112,12 @@ class YesDevAPIImpl implements YesDevAPI {
     return this.request<YesDevResponse<ProjectTaskListResponse>>('POST', 'Platform.Tasks.SmartGetProjectTaskList', params);
   }
 
+  // 项目相关
+  async getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>> {
+    return this.request<YesDevResponse<MyProjectListResponse>>('POST', 'Platform.Projects.GetProjectLeftSideMenu');
+  }
 
+  // 全局相关
   async getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>> {
     const response = await this.request('POST', 'Platform.Setting_Setting.Start', params);
     return response as YesDevResponse<GlobalConfig>;

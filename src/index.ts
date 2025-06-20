@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerTaskTools } from './mcp/tools/task.js';
+import { registerProjectTools } from './mcp/tools/project.js';
 import dotenv from 'dotenv';
 import { configManager } from './yesdev/config.js';
 
@@ -21,9 +22,12 @@ async function main() {
     server.connect(transport);
 
     console.log('正在注册工具...');
-    const registeredTools = registerTaskTools(server);
+    const taskTools = registerTaskTools(server);
+    const projectTools = registerProjectTools(server);
+    const allTools = new Set([...taskTools, ...projectTools]);
+    
     console.log('YesDev MCP Server 已启动');
-    console.log('已注册的工具:', Array.from(registeredTools));
+    console.log('已注册的工具:', Array.from(allTools));
 
   } catch (error) {
     console.error('服务启动失败:', error);

@@ -29,7 +29,7 @@ export function registerTaskTools(server: McpServer): Set<string> {
         is_milestone: z.number().optional().describe('是否里程碑，1是0否'),
       }
     },
-    async (args: { task_title: string; staff_id?: string; task_desc?: string; task_finish_time?: string; plan_start_date?: string; task_type?: number; task_time?: number; project_id?: number; need_id?: number; task_status?: number; not_send_email?: number; problem_id?: number; is_milestone?: number }) => {
+    async (args: { task_title: string; staff_id?: string; task_desc?: string; task_finish_time?: string; plan_start_date?: string; task_type?: number; task_time?: number; project_id?: number; need_id?: number; task_status?: number; not_send_email?: number; problem_id?: number; is_milestone?: number, from_channel?: string }) => {
       try {
         // 计划开始时间 默认为今天，格式：YYYY-MM-DD
         if (!args.plan_start_date) {
@@ -43,27 +43,13 @@ export function registerTaskTools(server: McpServer): Set<string> {
         if (args.task_desc) {
           args.task_desc += `<p><br>任务创建来自MCP工具</p>`;
         }
+        args.from_channel = 'mcp';
 
-        const result = await yesdevAPI.createTask({
-          task_title: args.task_title,
-          staff_id: args.staff_id,
-          task_desc: args.task_desc,
-          task_finish_time: args.task_finish_time,
-          plan_start_date: args.plan_start_date,
-          task_type: args.task_type,
-          task_time: args.task_time,
-          project_id: args.project_id,
-          need_id: args.need_id,
-          task_status: args.task_status,
-          not_send_email: args.not_send_email,
-          problem_id: args.problem_id,
-          is_milestone: args.is_milestone,
-          from_channel: 'mcp',
-        });
+        const result = await yesdevAPI.createTask(args);
         return {
           content: [{
             type: 'text',
-            text: `成功创建任务，ID: ${result.id}`
+            text: `成功创建任务，ID: ${result.data.id}`
           }]
         };
       } catch (error: any) {
@@ -164,21 +150,20 @@ export function registerTaskTools(server: McpServer): Set<string> {
       description: '更新任务的信息，支持局部更新',
       inputSchema: {
         id: z.string().describe('要更新的任务ID'),
-        task_title: z.string().max(200).describe('新的任务标题，长度不超过200字符'),
-        task_desc: z.string().optional().describe('新的任务描述，采用HTML格式'),
+        task_title: z.string().optional().describe('新的任务标题'),
+        task_desc: z.string().optional().describe('新的任务描述'),
         staff_id: z.string().optional().describe('新的负责人ID'),
         task_time: z.number().optional().describe('新的评估工时（小时）'),
         plan_start_date: z.string().optional().describe('新的计划开始时间 (YYYY-MM-DD)'),
         task_finish_time: z.string().optional().describe('新的计划完成时间 (YYYY-MM-DD)'),
         task_status: z.number().optional().describe('新的任务状态'),
-        check_status: z.number().optional().describe('新的任务验收状态'),
         task_type: z.number().optional().describe('新的任务类型'),
         project_id: z.number().optional().describe('新的关联项目ID'),
         need_id: z.number().optional().describe('新的关联需求ID'),
         problem_id: z.number().optional().describe('新的关联问题ID'),
         task_parent_id: z.number().optional().describe('新的父任务ID'),
         is_milestone: z.number().optional().describe('是否设置为里程碑 (1是, 0否)'),
-        real_task_time: z.number().optional().describe('新的实际工时（小时）')
+        real_task_time: z.string().optional().describe('新的实际工时，单位：小时')
       }
     },
     async (args: { 
@@ -190,14 +175,13 @@ export function registerTaskTools(server: McpServer): Set<string> {
       plan_start_date?: string;
       task_finish_time?: string;
       task_status?: number;
-      check_status?: number;
       task_type?: number;
       project_id?: number;
       need_id?: number;
+      problem_id?: number;
       task_parent_id?: number;
       is_milestone?: number;
-      real_task_time?: number;
-      problem_id?: number;
+      real_task_time?: string;
     }) => {
       try {
         await yesdevAPI.updateTask(args);
@@ -256,37 +240,35 @@ export function registerTaskTools(server: McpServer): Set<string> {
   server.registerTool(
     'query_tasks',
     {
-      title: '查询全部任务列表',
+      title: '查询任务列表',
       description: '根据多种条件查询任务列表',
       inputSchema: {
-        staff_ids: z.string().optional().describe('负责人ID,多个用逗号隔开'),
+        staff_ids: z.string().optional().describe('负责人ID，多个用逗号隔开'),
         project_id: z.number().optional().describe('项目ID'),
-        task_status: z.number().optional().describe('任务状态，多个用英文逗号分割'),
-        start_time: z.string().optional().describe('开始时间 (YYYY-MM-DD)，不提供不限制，格式如：2021-06-01'),
-        end_time: z.string().optional().describe('结束时间 (YYYY-MM-DD)，不提供不限制，格式如：2021-06-01'),
-        start_task_finish_time: z.string().optional().describe('任务完成时间范围-开始 (YYYY-MM-DD)'),
-        end_task_finish_time: z.string().optional().describe('任务完成时间范围-结束 (YYYY-MM-DD)'),
-        start_sys_update_time: z.string().optional().describe('开始更新时间 (YYYY-MM-DD)，不提供不限制，格式如：2021-06-01'),
-        end_sys_update_time: z.string().optional().describe('结束更新时间 (YYYY-MM-DD)，不提供不限制，格式如：2021-06-01'),
-        page: z.number().optional().default(1).describe('页码，默认为 1'),
-        perpage: z.number().optional().default(20).describe('每页数量，默认为 20'),
-        created_staff_ids: z.string().optional().describe('创建人ID,多个用逗号隔开'),
-        order_status: z.string().optional().describe('排序方式代码：0-id排序；1-最后更新时间；2-创建时间；3-任务工时；4-延期提醒；5-推测延期提醒；6-最后延期提醒；7-计划完成时间'),
-        order_status_sort: z.string().optional().describe('排序方式：0-降序；1-升序'),
+        task_status: z.number().optional().describe('任务状态'),
+        start_time: z.string().optional().describe('创建时间范围-开始 (YYYY-MM-DD)'),
+        end_time: z.string().optional().describe('创建时间范围-结束 (YYYY-MM-DD)'),
+        start_task_finish_time: z.string().optional().describe('计划完成时间范围-开始 (YYYY-MM-DD)'),
+        end_task_finish_time: z.string().optional().describe('计划完成时间范围-结束 (YYYY-MM-DD)'),
+        page: z.number().optional().describe('页码，默认为 1'),
+        perpage: z.number().optional().describe('每页数量，默认为 20'),
+        created_staff_ids: z.string().optional().describe('创建人ID，多个用逗号隔开'),
+        order_status: z.string().optional().describe('排序字段'),
+        order_status_sort: z.string().optional().describe('排序方式 (asc/desc)'),
         task_keyword: z.string().optional().describe('关键词，用于搜索任务标题'),
-        task_id: z.string().optional().describe('任务ID,多个用逗号隔开'),
+        task_id: z.string().optional().describe('任务ID，多个用逗号隔开'),
         work_group_id: z.string().optional().describe('工作组ID'),
-        need_id: z.string().optional().describe('需求ID,多个用逗号隔开'),
+        need_id: z.string().optional().describe('需求ID'),
         problem_id: z.string().optional().describe('问题ID'),
-        task_type: z.number().optional().describe('任务类型，多个使用英文逗号隔开'),
-        start_task_time: z.string().optional().describe('任务工时评估，开始值，单位：小时，不提供不限制，格式如：1.0'),
-        end_task_time: z.string().optional().describe('任务工时评估，结束值，单位：小时，不提供不限制，格式如：1.0'),
-        start_plan_start_date: z.string().optional().describe('计划开始时间-开始 (YYYY-MM-DD)'),
-        end_plan_start_date: z.string().optional().describe('计划开始时间-结束 (YYYY-MM-DD)'),
-        start_actual_finish_date: z.string().optional().describe('实际完成时间-开始 (YYYY-MM-DD)'),
-        end_actual_finish_date: z.string().optional().describe('实际完成时间-结束 (YYYY-MM-DD)'),
+        task_type: z.string().optional().describe('任务类型'),
+        start_task_time: z.string().optional().describe('评估工时范围-开始'),
+        end_task_time: z.string().optional().describe('评估工时范围-结束'),
         task_parent_id: z.string().optional().describe('父任务ID'),
-        is_milestone: z.string().optional().describe('是否任务里程碑，0否1是'),
+        is_milestone: z.string().optional().describe('是否里程碑 (1是, 0否)'),
+        start_plan_start_date: z.string().optional().describe('计划开始时间范围-开始 (YYYY-MM-DD)'),
+        end_plan_start_date: z.string().optional().describe('计划开始时间范围-结束 (YYYY-MM-DD)'),
+        start_actual_finish_date: z.string().optional().describe('实际完成时间范围-开始 (YYYY-MM-DD)'),
+        end_actual_finish_date: z.string().optional().describe('实际完成时间范围-结束 (YYYY-MM-DD)'),
       }
     },
     async (args: {
@@ -297,8 +279,6 @@ export function registerTaskTools(server: McpServer): Set<string> {
       end_time?: string;
       start_task_finish_time?: string;
       end_task_finish_time?: string;
-      start_sys_update_time?: string;
-      end_sys_update_time?: string;
       page?: number;
       perpage?: number;
       created_staff_ids?: string;
@@ -314,6 +294,10 @@ export function registerTaskTools(server: McpServer): Set<string> {
       end_task_time?: string;
       task_parent_id?: string;
       is_milestone?: string;
+      start_plan_start_date?: string;
+      end_plan_start_date?: string;
+      start_actual_finish_date?: string;
+      end_actual_finish_date?: string;
     }) => {
       try {
         const result = await yesdevAPI.queryTasks({
@@ -342,7 +326,7 @@ export function registerTaskTools(server: McpServer): Set<string> {
         const taskLines = items.map(task => {
           const statusName = configManager.getTaskStatusName(task.task_status);
           const link = `https://www.yesdev.cn/platform/task/task-detail?id=${task.id}`;
-          return `- [${statusName}] [${task.task_title}](${link}) (负责人: ${task.staff_name || '无'})`;
+          return `- [${statusName}] [${task.task_title}](${link}) (负责人: ${task.staff_name || 'N/A'})`;
         });
 
         const responseText = [
@@ -369,12 +353,61 @@ export function registerTaskTools(server: McpServer): Set<string> {
   );
   registeredTools.add('query_tasks');
 
-  // 6. 获取我当前的任务列表
+  // 6. 获取我的待办任务列表
   server.registerTool(
     'get_my_task_list',
     {
-      title: '获取我当前的任务列表',
-      description: '获取我当前的任务列表',
+      title: '获取我的待办任务',
+      description: '获取我当前负责的、未完成的任务列表',
+      inputSchema: {}
+    },
+    async () => {
+      try {
+        const result = await yesdevAPI.getMyTaskList();
+
+        if (result.ret !== 200 || !result.data) {
+          return {
+            content: [{
+              type: 'text',
+              text: `获取我的任务列表失败: ${result.msg || '返回数据格式不正确'}`
+            }],
+            isError: true
+          };
+        }
+
+        const { task_list } = result.data;
+        if (!task_list || task_list.length === 0) {
+          return {
+            content: [{ type: 'text', text: '太棒了！你当前没有待办任务。' }]
+          };
+        }
+
+        const taskLines = task_list.map(task => {
+          const statusName = configManager.getTaskStatusName(task.task_status);
+          const link = `https://www.yesdev.cn/platform/task/task-detail?id=${task.id}`;
+          return `- [${statusName}] [${task.task_title}](${link})`;
+        });
+
+        const responseText = [
+          `### 📝 你的待办任务`,
+          ...taskLines,
+        ].join('\n');
+
+        return {
+          content: [{
+            type: 'text',
+            text: responseText
+          }]
+        };
+      } catch (error: any) {
+        return {
+          content: [{
+            type: 'text',
+            text: `获取我的任务列表失败: ${error.message}`
+          }],
+          isError: true
+        };
+      }
     }
   );
   registeredTools.add('get_my_task_list');
@@ -387,15 +420,54 @@ export function registerTaskTools(server: McpServer): Set<string> {
       description: '获取指定项目的任务列表',
       inputSchema: {
         project_id: z.number().describe('项目ID'),
+        task_status: z.string().optional().describe('任务状态，多个用英文逗号分割'),
+        is_milestone: z.string().optional().describe('是否里程碑 (1是, 0否)'),
+        page: z.number().optional().default(1).describe('页码，默认为 1'),
+        perpage: z.number().optional().default(20).describe('每页数量，默认为 20')
       }
     },
-    async (args: { project_id: number }) => {
+    async (args: {
+      project_id: number;
+      task_status?: string;
+      is_milestone?: string;
+      page?: number;
+      perpage?: number;
+    }) => {
       try {
-        const result = await yesdevAPI.getProjectTaskList({ project_id: args.project_id });
+        const result = await yesdevAPI.getProjectTaskList(args);
+
+        if (result.ret !== 200 || !result.data) {
+          return {
+            content: [{
+              type: 'text',
+              text: `获取项目任务列表失败: ${result.msg || '返回数据格式不正确'}`
+            }],
+            isError: true
+          };
+        }
+
+        const { task_list, total } = result.data;
+        if (!task_list || task_list.length === 0) {
+          return {
+            content: [{ type: 'text', text: '该项目下未查询到任何任务。' }]
+          };
+        }
+
+        const taskLines = task_list.map(task => {
+          const statusName = configManager.getTaskStatusName(task.task_status);
+          const link = `https://www.yesdev.cn/platform/task/task-detail?id=${task.id}`;
+          return `- [${statusName}] [${task.task_title}](${link}) (负责人: ${task.staff_name || '无'})`;
+        });
+
+        const responseText = [
+          `### 项目任务列表 (共 ${total} 条)`,
+          ...taskLines,
+        ].join('\n');
+
         return {
           content: [{
             type: 'text',
-            text: `获取项目任务列表成功: ${result.data.total} 条`
+            text: responseText
           }]
         };
       } catch (error: any) {
@@ -409,6 +481,7 @@ export function registerTaskTools(server: McpServer): Set<string> {
       }
     }
   );
+  registeredTools.add('get_project_task_list');
 
   return registeredTools;
 } 

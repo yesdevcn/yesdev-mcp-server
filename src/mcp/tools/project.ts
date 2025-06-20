@@ -66,7 +66,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
     'get_project_detail',
     {
         title: '获取项目详情',
-        description: '获取指定ID的项目的详细信息',
+        description: '获取指定项目ID的项目详细信息',
         inputSchema: {
             id: z.number().describe('项目ID'),
         }
@@ -83,18 +83,20 @@ export function registerProjectTools(server: McpServer): Set<string> {
             }
  
             const project = result.data;
-            const link = `https://www.yesdev.cn/platform/#/project/project-detail?id=${project.id}`;
+            const link = `https://www.yesdev.cn/platform/project/projects-detail?id=${project.id}`;
+
+            const statStr = `项目进度: ${project.nav_count.project_percent}%、需求：${project.nav_count.done_need_nums}/${project.nav_count.need_nums}个、任务：${project.nav_count.done_task_nums}/${project.nav_count.task_nums}个、问题：${project.nav_count.done_problem_nums}/${project.nav_count.problem_nums}个`;
  
             const responseText = [
                 `### 项目详情: ${project.project_name}`,
-                `**ID**: ${project.id}`,
+                `**项目ID**: ${project.id}`,
                 `**负责人**: ${project.charge_staff_name}`,
                 `**创建人**: ${project.created_staff_name}`,
                 `**创建时间**: ${project.add_time}`,
-                `**状态**: ${configManager.getProjectStatusName(project.project_status)}`,
+                `**项目状态**: ${configManager.getProjectStatusName(project.project_status)}`,
                 `**开始日期**: ${project.project_start_time || '未设置'}`,
                 `**结束日期**: ${project.project_end_time || '未设置'}`,
-                `**描述**: ${project.project_desc || '无'}`,
+                `**项目统计**: ${statStr}`,
                 `\n[在YesDev中查看项目](${link})`
             ].join('\n');
 

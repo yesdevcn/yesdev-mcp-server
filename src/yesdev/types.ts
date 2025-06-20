@@ -144,6 +144,19 @@ export interface ProjectResponse {
   charge_staff_id: number;
   created_staff_name: string;
   add_time: string;
+
+  nav_count: {
+    delay_need_nums: number;
+    delay_task_nums: number;
+    done_need_nums: number;
+    done_problem_nums: number;
+    done_task_nums: number;
+    need_nums: number;
+    problem_nums: number;
+    task_nums: number;
+    project_percent: number;
+    desc_update_nums: number;
+  }
 }
 
 export interface MyProjectListParams {

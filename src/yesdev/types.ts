@@ -118,6 +118,7 @@ export interface TaskListResponse {
   items: TaskResponse[];
 }
 
+// 项目任务相关
 export interface ProjectTaskListParams {
   project_id: number;
   task_status?: string;
@@ -142,11 +143,11 @@ export interface ProjectResponse {
   project_desc: string;
   charge_staff_id: number;
   created_staff_name: string;
-  created_time: string;
+  add_time: string;
 }
 
 export interface MyProjectListResponse {
-  items: {
+  project_list: {
       id: number;
       project_name: string;
   }[];
@@ -161,9 +162,55 @@ export interface UpdateProjectParams {
   project_name?: string;
   project_desc?: string;
   charge_staff_id?: number;
+  project_bg_color?: string;
   project_start_time?: string;
   project_end_time?: string;
   project_status?: number;
+}
+
+export interface CreateProjectParams {
+  project_name: string;
+  project_start_time?: string;
+  project_end_time?: string;
+  project_desc?: string;
+  project_status?: number;
+  charge_staff_id?: number;
+  workgroup_id?: number;
+  project_level_type?: number;
+}
+
+export interface ProjectAddResponse {
+  id: number;
+}
+
+export interface UpdateProjectStatusParams {
+  id: number;
+  project_status: number;
+}
+
+export interface UpdateProjectTimeParams {
+  id: number;
+  project_start_time: string;
+  project_end_time: string;
+}
+
+export interface ProjectListParams {
+  id?: number;
+  project_name?: string;
+  charge_staff_name?: string;
+  project_status?: string;
+  page?: number;
+  perpage?: number;
+  order_status?: number;
+  order_status_sort?: number;
+  project_start_time?: string;
+  project_end_time?: string;
+  charge_staff_id?: string;
+}
+
+export interface ProjectListResponse {
+  total: number;
+  projects: ProjectResponse[];
 }
 
 export interface YesDevAPI {
@@ -177,9 +224,13 @@ export interface YesDevAPI {
   getProjectTaskList(params: ProjectTaskListParams): Promise<YesDevResponse<ProjectTaskListResponse>>;
   
   // 项目相关
-  getMyProjectList(params: void): Promise<YesDevResponse<MyProjectListResponse>>;
+  createProject(params: CreateProjectParams): Promise<YesDevResponse<ProjectAddResponse>>;
   getProjectDetail(params: ProjectDetailParams): Promise<YesDevResponse<ProjectResponse>>;
-  updateProject(params: UpdateProjectParams): Promise<YesDevResponse<void>>;
+  updateProjectStatus(params: UpdateProjectStatusParams): Promise<YesDevResponse<void>>;
+  updateProjectPart(params: UpdateProjectParams): Promise<YesDevResponse<void>>;
+  updateProjectTime(params: UpdateProjectTimeParams): Promise<YesDevResponse<void>>;
+  getMyProjectList(): Promise<YesDevResponse<MyProjectListResponse>>;
+  getProjectList(params: ProjectListParams): Promise<YesDevResponse<ProjectListResponse>>;
 
   // 全局相关
   getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>>;

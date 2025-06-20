@@ -18,8 +18,15 @@ import type {
   MyProjectListResponse,
   ProjectDetailParams,
   UpdateProjectParams,
-  ProjectResponse
+  ProjectResponse,
+  CreateProjectParams,
+  ProjectAddResponse,
+  UpdateProjectStatusParams,
+  UpdateProjectTimeParams,
+  ProjectListParams,
+  ProjectListResponse
 } from './types.js';
+import { configManager } from './config.js';
 
 dotenv.config();
 

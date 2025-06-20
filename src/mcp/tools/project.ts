@@ -116,26 +116,18 @@ export function registerProjectTools(server: McpServer): Set<string> {
     'update_project',
     {
         title: '更新项目',
-        description: '局部更新指定ID的项目的信息',
+        description: '局部更新指定ID的项目的信息，仅支持更新项目名称、项目描述、项目负责人、项目背景颜色',
         inputSchema: {
             id: z.number().describe('要更新的项目ID'),
             project_name: z.string().optional().describe('新的项目名称'),
-            project_desc: z.string().optional().describe('新的项目描述'),
-            charge_staff_id: z.number().optional().describe('新的项目负责人ID'),
-            project_status: z.number().optional().describe('新的项目状态'),
-            project_start_time: z.string().optional().describe('新的计划开始时间 (YYYY-MM-DD)'),
-            project_end_time: z.string().optional().describe('新的计划完成时间 (YYYY-MM-DD)'),
-            project_bg_color: z.string().optional().describe('项目背景颜色'),
+            project_desc: z.string().optional().describe('新的项目描述，使用HTML格式'),
+            project_bg_color: z.string().optional().describe('项目背景颜色，使用#FFFFFF格式'),
         }
     },
     async (args: { 
         id: number;
         project_name?: string;
         project_desc?: string;
-        charge_staff_id?: number;
-        project_status?: number;
-        project_start_time?: string;
-        project_end_time?: string;
         project_bg_color?: string;
     }) => {
         try {
@@ -165,25 +157,39 @@ export function registerProjectTools(server: McpServer): Set<string> {
         description: '创建一个新的YesDev项目',
         inputSchema: {
             project_name: z.string().describe('项目名称'),
-            project_desc: z.string().optional().describe('项目描述'),
+            project_desc: z.string().optional().describe('项目描述，使用HTML格式'),
             charge_staff_id: z.number().optional().describe('项目负责人ID'),
             workgroup_id: z.number().optional().describe('工作组ID'),
-            project_start_time: z.string().optional().describe('计划开始时间 (YYYY-MM-DD)'),
-            project_end_time: z.string().optional().describe('计划完成时间 (YYYY-MM-DD)'),
-            project_status: z.number().optional().describe('项目状态'),
-            project_level_type: z.number().optional().describe('项目级别类型'),
+            project_start_time: z.string().optional().describe('项目计划开始时间 (YYYY-MM-DD)'),
+            project_end_time: z.string().optional().describe('项目计划完成时间 (YYYY-MM-DD)'),
+            project_status: z.number().optional().default(0).describe('项目状态，0规划中1进行中2已完成3挂起'),
+            project_level_type: z.number().optional().describe('项目级别类型：0-个人项目；1-公司项目'),
+            project_bg_color: z.string().optional().describe('项目背景颜色，使用#FFFFFF格式'),
+            from_channel: z.string().optional().describe('来源渠道，默认mcp'),
         }
     },
     async (args) => {
         try {
-            const result = await yesdevAPI.createProject(args);
-            if (result.ret !== 200 || !result.data) {
-                 return {
-                    content: [{ type: 'text', text: `创建项目失败: ${result.msg || '未知错误'}` }],
-                    isError: true,
-                };
-            }
-            return { content: [{ type: 'text', text: `新项目已成功创建，项目ID是 ${result.data.id}` }] };
+          // 默认计划开始时间
+          if (!args.project_start_time) {
+            args.project_start_time = new Date().toISOString().split('T')[0];
+          }
+          // 默认项目级别类型
+          if (!args.project_level_type && args.project_level_type !== 0) {
+            args.project_level_type = 1;
+          }
+          args.project_desc = `<p><br>项目创建来自MCP工具</p>`;
+          
+          args.from_channel = 'mcp';
+          
+          const result = await yesdevAPI.createProject(args);
+          if (result.ret !== 200 || !result.data) {
+                return {
+                  content: [{ type: 'text', text: `创建项目失败: ${result.msg || '未知错误'}` }],
+                  isError: true,
+              };
+          }
+          return { content: [{ type: 'text', text: `新项目已成功创建，项目ID是 ${result.data.id}` }] };
         } catch (error: any) {
             return {
                 content: [{ type: 'text', text: `创建项目失败: ${error.message}` }],

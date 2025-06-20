@@ -135,7 +135,7 @@ YesDev MCP Server 已启动
 
 ## 🛠️ 已实现的工具
 
-你可以根据自己、团队和公司的需要，结合[YesDev API 接口文档](https://www.yesdev.cn/docs.php)，扩展更多任务工时MCP工具。  
+你可以根据自己、团队和公司的需要，结合[YesDev API 接口文档](https://www.yesdev.cn/docs.php) 800+ 在线API接口，扩展更多任务工时及项目管理MCP工具。  
 
 已实现的工具有：  
 
@@ -149,4 +149,5 @@ YesDev MCP Server 已启动
 
 - 📦 [MCP TS-sdk](https://github.com/modelcontextprotocol/typescript-sdk)
 - 📚 [Model Context Protocol](https://github.com/modelcontextprotocol/modelcontextprotocol)
+- 📚 [For Server Developers - TS](https://modelcontextprotocol.io/quickstart/server#node)
 - 🌟 [Awesome-MCP-ZH](https://github.com/yzfly/Awesome-MCP-ZH)

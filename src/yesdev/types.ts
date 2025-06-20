@@ -1,26 +1,11 @@
-
+// 通用响应类型
 export interface YesDevResponse<T> {
   ret: number;
   data: T;
   msg: string;
 }
 
-export interface TaskResponse {
-  id: string;
-  title: string;
-  description?: string;
-  status: number;
-  priority: number;
-  assignee: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface TaskListResponse {
-  total: number;
-  items: TaskResponse[];
-}
-
+// 任务相关类型
 export interface CreateTaskParams {
   task_title: string;
   staff_id?: string;
@@ -38,42 +23,156 @@ export interface CreateTaskParams {
   from_channel?: string;
 }
 
-export interface UpdateTaskParams {
-  id: string;
-  title?: string;
-  description?: string;
-  assignee?: string;
-  status?: number;
-  priority?: number;
+export interface TaskAddResponse {
+  id: number | any[];
 }
 
 export interface TaskDetailParams {
   id: number;
 }
 
-export interface TaskListParams {
-  page?: number;
-  page_size?: number;
-  status?: number;
+export interface TaskResponse {
+  id: number;
+  task_title: string;
+  task_type: number;
+  task_time: string;
+  task_finish_time: string | null;
+  task_status: number;
+  project_id: number;
+  problem_id: number;
+  app_key: string;
+  add_time: string;
+  staff_id: number;
+  need_id: number;
+  sys_update_time: string;
+  task_desc: string;
+  created_staff_id: number;
+  check_status_name?: string;
+  custom_field_data?: any[];
+  plan_start_date?: string | null;
+  actual_finish_date?: string | null;
+  task_parent_id?: number;
+  is_milestone?: number;
+  real_task_time?: string;
+  staff_name: string;
+  created_staff_name: string;
+}
+
+export interface MyTaskListResponse {
+  task_list: TaskResponse[];
+}
+
+export interface UpdateTaskParams {
+  id: string;
+  task_title?: string;
+  task_desc?: string;
   staff_id?: string;
+  task_time?: number;
+  plan_start_date?: string;
+  task_finish_time?: string;
+  task_status?: number;
+  task_type?: number;
+  project_id?: number;
+  need_id?: number;
+  problem_id?: number;
+  task_parent_id?: number;
+  is_milestone?: number;
+  real_task_time?: string;
 }
 
-export interface CheckTaskParams {
-  id: string;
-  comment?: string;
+export interface TaskUpdateResponse {
+  is_updated: number;
 }
 
-export interface RevokeCheckTaskParams {
-  id: string;
-  reason?: string;
+export interface QueryTasksParams {
+  staff_ids?: string;
+  project_id?: number;
+  task_status?: number;
+  start_time?: string;
+  end_time?: string;
+  start_task_finish_time?: string;
+  end_task_finish_time?: string;
+  page?: number;
+  perpage?: number;
+  created_staff_ids?: string;
+  order_status?: string;
+  order_status_sort?: string;
+  task_keyword?: string;
+  task_id?: string;
+  work_group_id?: string;
+  need_id?: string;
+  problem_id?: string;
+  task_type?: string;
+  start_task_time?: string;
+  end_task_time?: string;
+  task_parent_id?: string;
+  is_milestone?: string;
+  start_plan_start_date?: string;
+  end_plan_start_date?: string;
+  start_actual_finish_date?: string;
+  end_actual_finish_date?: string;
+}
+
+export interface TaskListResponse {
+  total: number;
+  items: TaskResponse[];
+}
+
+export interface ProjectTaskListParams {
+  project_id: number;
+  task_list_type?: string;
+  task_status?: string;
+  is_milestone?: string;
+  page?: number;
+  perpage?: number;
+}
+
+export interface ProjectTaskListResponse {
+  total: number;
+  task_list: TaskResponse[];
 }
 
 export interface YesDevAPI {
-  createTask(params: CreateTaskParams): Promise<TaskResponse>;
-  getTaskDetail(params: TaskDetailParams): Promise<TaskResponse>;
-  updateTask(params: UpdateTaskParams): Promise<TaskResponse>;
-  removeTask(params: TaskDetailParams): Promise<void>;
-  getTaskList(params: TaskListParams): Promise<TaskListResponse>;
-  checkTask(params: CheckTaskParams): Promise<void>;
-  revokeCheckTask(params: RevokeCheckTaskParams): Promise<void>;
+  // 任务相关
+  createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>>;
+  getTaskDetail(params: TaskDetailParams): Promise<YesDevResponse<TaskResponse>>;
+  updateTask(params: UpdateTaskParams): Promise<YesDevResponse<TaskUpdateResponse>>;
+  removeTask(params: TaskDetailParams): Promise<YesDevResponse<void>>;
+  queryTasks(params: QueryTasksParams): Promise<YesDevResponse<TaskListResponse>>;
+  getMyTaskList(params: void): Promise<YesDevResponse<MyTaskListResponse>>;
+  getProjectTaskList(params: ProjectTaskListParams): Promise<YesDevResponse<ProjectTaskListResponse>>;
+  
+  // 全局相关
+  getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>>;
+}
+
+// -- Global Config Types --
+
+export interface ConstantInfo {
+    name: string;
+    value: number | string;
+    color?: string;
+    key?: string;
+    alias?: string;
+}
+
+export interface ConstantData {
+    [key: string]: ConstantInfo;
+}
+
+export interface GlobalConfig {
+    is_last: number;
+    version: string;
+    alias_list: {
+        TASK_STATUS: ConstantData;
+        TASK_TYPE: ConstantData;
+        PROBLEM_STATUS: ConstantData;
+        PROBLEM_TYPE: ConstantData;
+        PROBLEM_LEVEL: ConstantData;
+        PROBLEM_ATTRIBUTION: ConstantData;
+        NEED_STATUS: ConstantData;
+        NEED_LEVEL: ConstantData;
+        [key: string]: ConstantData;
+    };
+    ai: any;
 } 

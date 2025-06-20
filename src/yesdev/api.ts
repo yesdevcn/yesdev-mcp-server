@@ -2,14 +2,19 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import type {
   YesDevAPI,
+  YesDevResponse,
+  MyTaskListResponse,
+  ProjectTaskListResponse,
+  ProjectTaskListParams,
   CreateTaskParams,
+  TaskAddResponse,
   TaskResponse,
+  TaskUpdateResponse,
   TaskDetailParams,
   UpdateTaskParams,
-  TaskListParams,
+  QueryTasksParams,
   TaskListResponse,
-  CheckTaskParams,
-  RevokeCheckTaskParams
+  GlobalConfig
 } from './types.js';
 
 dotenv.config();
@@ -72,38 +77,44 @@ class YesDevAPIImpl implements YesDevAPI {
   }
 
   // 1. 创建任务
-  async createTask(params: CreateTaskParams): Promise<TaskResponse> {
-    return this.request<TaskResponse>('POST', 'Platform.Tasks.CreateNewTask', params);
+  async createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>> {
+    return this.request<YesDevResponse<TaskAddResponse>>('POST', 'Platform.Tasks.CreateNewTask', params);
   }
 
   // 2. 获取任务详情
-  async getTaskDetail(params: TaskDetailParams): Promise<TaskResponse> {
-    return this.request<TaskResponse>('POST', 'Platform.Tasks.GetTaskDetail', params);
+  async getTaskDetail(params: TaskDetailParams): Promise<YesDevResponse<TaskResponse>> {
+    return this.request<YesDevResponse<TaskResponse>>('POST', 'Platform.Tasks.GetTaskDetail', params);
   }
 
   // 3. 更新任务
-  async updateTask(params: UpdateTaskParams): Promise<TaskResponse> {
-    return this.request<TaskResponse>('POST', 'Platform.Tasks.UpdateTask', params);
+  async updateTask(params: UpdateTaskParams): Promise<YesDevResponse<TaskUpdateResponse>> {
+    return this.request<YesDevResponse<TaskUpdateResponse>>('POST', 'Platform.Tasks.UpdateTaskLite', params);
   }
 
   // 4. 删除任务
-  async removeTask(params: TaskDetailParams): Promise<void> {
-    await this.request<void>('POST', 'Platform.Tasks.RemoveTask', params);
+  async removeTask(params: TaskDetailParams): Promise<YesDevResponse<void>> {
+    return this.request<YesDevResponse<void>>('POST', 'Platform.Tasks.RemoveTask', params);
   }
 
-  // 5. 获取任务列表
-  async getTaskList(params: TaskListParams): Promise<TaskListResponse> {
-    return this.request<TaskListResponse>('POST', 'Platform.Tasks.GetTaskList', params);
+  // 5. 查询全部任务列表
+  async queryTasks(params: QueryTasksParams): Promise<YesDevResponse<TaskListResponse>> {
+    return this.request<YesDevResponse<TaskListResponse>>('POST', 'Platform.Tasks.QueryTasks', params);
   }
 
-  // 6. 任务验收
-  async checkTask(params: CheckTaskParams): Promise<void> {
-    await this.request<void>('POST', 'Platform.Tasks.CheckTask', params);
+  // 6. 获取我当前的任务列表
+  async getMyTaskList(params: void): Promise<YesDevResponse<MyTaskListResponse>> {
+    return this.request<YesDevResponse<MyTaskListResponse>>('POST', 'Platform.Tasks.GetTaskLeftSideMenu', params);
   }
 
-  // 7. 撤销任务验收
-  async revokeCheckTask(params: RevokeCheckTaskParams): Promise<void> {
-    await this.request<void>('POST', 'Platform.Tasks.RevokeCheckTask', params);
+  // 7. 获取项目任务列表
+  async getProjectTaskList(params: ProjectTaskListParams): Promise<YesDevResponse<ProjectTaskListResponse>> {
+    return this.request<YesDevResponse<ProjectTaskListResponse>>('POST', 'Platform.Tasks.SmartGetProjectTaskList', params);
+  }
+
+
+  async getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>> {
+    const response = await this.request('POST', 'Platform.Setting_Setting.Start', params);
+    return response as YesDevResponse<GlobalConfig>;
   }
 }
 

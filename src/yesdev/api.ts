@@ -25,7 +25,11 @@ import type {
   UpdateProjectStatusParams,
   UpdateProjectTimeParams,
   ProjectListParams,
-  ProjectListResponse
+  ProjectListResponse,
+  StaffListResponse,
+  WorkgroupListResponse,
+  UserProfileResponse,
+  SearchStaffParams
 } from './types.js';
 import { configManager } from './config.js';
 
@@ -35,12 +39,8 @@ class YesDevAPIImpl implements YesDevAPI {
   private readonly baseURL = 'https://www.yesdev.cn/api/platform.php';
   private readonly accessToken: string;
 
-  constructor() {
-    const token = process.env.YESDEV_ACCESS_TOKEN;
-    if (!token) {
-      throw new Error('YESDEV_ACCESS_TOKEN environment variable is not set');
-    }
-    this.accessToken = token;
+  constructor(accessToken: string) {
+    this.accessToken = accessToken;
   }
 
   private async request<T>(method: string, service: string, data?: any): Promise<T> {
@@ -163,7 +163,19 @@ class YesDevAPIImpl implements YesDevAPI {
   async getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>> {
     return this.request<YesDevResponse<GlobalConfig>>('POST', 'Platform.Setting_Setting.Start', params);
   }
+
+  // 公共接口
+  async searchStaff(params: SearchStaffParams): Promise<YesDevResponse<StaffListResponse>> {
+    return this.request<YesDevResponse<StaffListResponse>>('POST', 'Platform.Staff.GetOrSearchStaffDropList', params);
+  }
+
+  async getWorkgroupList(): Promise<YesDevResponse<WorkgroupListResponse>> {
+    return this.request<YesDevResponse<WorkgroupListResponse>>('POST', 'Platform.Workgroup.GetWorkgroupDropList');
+  }
+
+  async getMyProfile(): Promise<YesDevResponse<UserProfileResponse>> {
+    return this.request<YesDevResponse<UserProfileResponse>>('POST', 'Platform.User.Profile');
+  }
 }
 
-// 导出单例实例
-export const yesdevAPI: YesDevAPI = new YesDevAPIImpl(); 
+export const yesdevAPI = new YesDevAPIImpl(process.env.YESDEV_ACCESS_TOKEN || ''); 

@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { registerTaskTools } from './mcp/tools/task.js';
 import { registerProjectTools } from './mcp/tools/project.js';
+import { registerCommonTools } from './mcp/tools/common.js';
 import dotenv from 'dotenv';
 import { configManager } from './yesdev/config.js';
 
@@ -21,7 +22,8 @@ async function main() {
     console.log('正在注册工具...');
     const taskTools = registerTaskTools(server);
     const projectTools = registerProjectTools(server);
-    const allTools = new Set([...taskTools, ...projectTools]);
+    const commonTools = registerCommonTools(server);
+    const allTools = new Set([...taskTools, ...projectTools, ...commonTools]);
 
     const transport = new StdioServerTransport();
     server.connect(transport);

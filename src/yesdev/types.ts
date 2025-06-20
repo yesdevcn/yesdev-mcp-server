@@ -231,6 +231,37 @@ export interface ProjectListResponse {
   projects: ProjectResponse[];
 }
 
+// -- 公共接口类型 --
+
+export interface Staff {
+  id: number;
+  staff_name: string;
+  staff_no?: string;
+  pinyin_abbr?: string;
+  pinyin?: string;
+}
+
+export interface SearchStaffParams {
+  keyword?: string;
+}
+
+export interface StaffListResponse {
+  items: Staff[];
+}
+
+export interface Workgroup {
+  id: number;
+  workgroup_name: string;
+}
+
+export interface WorkgroupListResponse {
+  items: Workgroup[];
+}
+
+export interface UserProfileResponse {
+  staff_info: Staff;
+}
+
 export interface YesDevAPI {
   // 任务相关
   createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>>;
@@ -252,6 +283,11 @@ export interface YesDevAPI {
 
   // 全局相关
   getGlobalConfig(params: { version?: string }): Promise<YesDevResponse<GlobalConfig>>;
+
+  // 公共接口
+  searchStaff(params: SearchStaffParams): Promise<YesDevResponse<StaffListResponse>>;
+  getWorkgroupList(): Promise<YesDevResponse<WorkgroupListResponse>>;
+  getMyProfile(): Promise<YesDevResponse<UserProfileResponse>>;
 }
 
 // -- Global Config Types --

@@ -28,8 +28,8 @@ export function registerProjectTools(server: McpServer): Set<string> {
           };
         }
         
-        const { items = [] } = result.data;
-        if (items.length === 0) {
+        const { project_list = [] } = result.data;
+        if (project_list.length === 0) {
             return {
                 content: [{ type: 'text', text: '你当前没有参与任何进行中的项目。' }]
             };
@@ -37,7 +37,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
 
         let responseText = '### 🚀 你的项目列表\n\n';
 
-        responseText += items.map(p => `- [${p.id}] ${p.project_name}`).join('\n');
+        responseText += project_list.map(p => `- [${p.id}] ${p.project_name}`).join('\n');
 
         return {
           content: [{
@@ -86,6 +86,8 @@ export function registerProjectTools(server: McpServer): Set<string> {
                 `### 项目详情: ${project.project_name}`,
                 `**ID**: ${project.id}`,
                 `**负责人**: ${project.charge_staff_name}`,
+                `**创建人**: ${project.created_staff_name}`,
+                `**创建时间**: ${project.add_time}`,
                 `**状态**: ${configManager.getProjectStatusName(project.project_status)}`,
                 `**开始日期**: ${project.project_start_time || '未设置'}`,
                 `**结束日期**: ${project.project_end_time || '未设置'}`,
@@ -104,7 +106,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
   );
   registeredTools.add('get_project_detail');
 
-  // 3. 更新项目
+  // 3. 更新项目 - 局部
   server.registerTool(
     'update_project',
     {
@@ -118,6 +120,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
             project_status: z.number().optional().describe('新的项目状态'),
             project_start_time: z.string().optional().describe('新的计划开始时间 (YYYY-MM-DD)'),
             project_end_time: z.string().optional().describe('新的计划完成时间 (YYYY-MM-DD)'),
+            project_bg_color: z.string().optional().describe('项目背景颜色'),
         }
     },
     async (args: { 
@@ -128,6 +131,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
         project_status?: number;
         project_start_time?: string;
         project_end_time?: string;
+        project_bg_color?: string;
     }) => {
         try {
             const result = await yesdevAPI.updateProjectPart(args);
@@ -162,6 +166,7 @@ export function registerProjectTools(server: McpServer): Set<string> {
             project_start_time: z.string().optional().describe('计划开始时间 (YYYY-MM-DD)'),
             project_end_time: z.string().optional().describe('计划完成时间 (YYYY-MM-DD)'),
             project_status: z.number().optional().describe('项目状态'),
+            project_level_type: z.number().optional().describe('项目级别类型'),
         }
     },
     async (args) => {
@@ -254,11 +259,17 @@ export function registerProjectTools(server: McpServer): Set<string> {
         title: '获取全部项目列表',
         description: '获取全部项目列表，支持筛选',
         inputSchema: {
-            project_name_keyword: z.string().optional().describe('项目名称关键字'),
-            charge_staff_id: z.number().optional().describe('项目负责人ID'),
+            id: z.number().optional().describe('项目ID'),
+            project_name: z.string().optional().describe('项目名称关键字'),
+            charge_staff_name: z.string().optional().describe('项目负责人名称'),
             project_status: z.string().optional().describe('项目状态，多个用逗号隔开'),
             page: z.number().optional().describe('页码'),
             perpage: z.number().optional().describe('每页数量'),
+            order_status: z.number().optional().describe('排序状态'),
+            order_status_sort: z.number().optional().describe('排序顺序'),
+            project_start_time: z.string().optional().describe('计划开始时间'),
+            project_end_time: z.string().optional().describe('计划完成时间'),
+            charge_staff_id: z.string().optional().describe('项目负责人ID'),
         }
     },
     async (args) => {
@@ -271,13 +282,13 @@ export function registerProjectTools(server: McpServer): Set<string> {
                 };
             }
 
-            const { items = [], total = 0 } = result.data;
-            if (items.length === 0) {
+            const { projects = [], total = 0 } = result.data;
+            if (projects.length === 0) {
                 return { content: [{ type: 'text', text: '未查询到任何项目。' }] };
             }
 
             let responseText = `### 项目列表 (共 ${total} 个)\n\n`;
-            responseText += items.map(p => {
+            responseText += projects.map(p => {
                 const status = configManager.getProjectStatusName(p.project_status);
                 return `- [${p.id}] ${p.project_name} (负责人: ${p.charge_staff_name}, 状态: ${status})`;
             }).join('\n');

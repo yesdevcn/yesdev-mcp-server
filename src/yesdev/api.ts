@@ -41,6 +41,8 @@ import type {
   NeedResponseLite,
   AddOrUpdateDailyParams,
   AddOrUpdateDailyResponse,
+  MyProblemListResponse,
+  UpdateProblemParams,
 } from './types.js';
 import { configManager } from './config.js';
 
@@ -224,6 +226,15 @@ class YesDevAPIImpl implements YesDevAPI {
   // 日报接口
   async addOrUpdateDaily(params: AddOrUpdateDailyParams): Promise<YesDevResponse<AddOrUpdateDailyResponse>> {
     return this.request<YesDevResponse<AddOrUpdateDailyResponse>>('POST', 'Platform.Daily_Daily.AddOrUpdateDaily', params);
+  }
+
+  // 问题缺陷接口
+  async getMyProblem(): Promise<YesDevResponse<MyProblemListResponse>> {
+    return this.request<YesDevResponse<MyProblemListResponse>>('POST', 'Platform.WorkBench_WorkBench.GetMyProblem');
+  }
+
+  async updateProblem(params: UpdateProblemParams): Promise<YesDevResponse<void>> {
+    return this.request<YesDevResponse<void>>('POST', 'Mobile.Problem_Problem.UpdatePartProblem', params);
   }
 }
 

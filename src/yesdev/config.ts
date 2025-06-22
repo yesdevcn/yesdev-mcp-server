@@ -64,6 +64,18 @@ class ConfigManager {
     public getNeedLevelName(level: number): string {
         return this.config?.alias_list?.NEED_LEVEL?.[level]?.name || '未知优先级';
     }
+
+    public getProblemStatusName(status: number): string {
+        return this.config?.alias_list?.PROBLEM_STATUS?.[status]?.name || '未知状态';
+    }
+
+    public getProblemLevelName(level: number): string {
+        return this.config?.alias_list?.PROBLEM_LEVEL?.[level]?.name || '未知优先级';
+    }
+
+    public getProblemTypeName(type: number): string {
+        return this.config?.alias_list?.PROBLEM_TYPE?.[type]?.name || '未知类型';
+    }
 }
 
 const configManager = new ConfigManager();

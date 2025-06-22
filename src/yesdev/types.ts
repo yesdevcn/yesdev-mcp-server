@@ -367,6 +367,34 @@ export interface AddOrUpdateDailyResponse {
   is_update: boolean;
 }
 
+// -- 问题缺陷接口类型 --
+export interface ProblemResponse {
+  id: number;
+  problem_title: string;
+  problem_status: number;
+  problem_level: number;
+  problem_type: number;
+  assign_staff_id?: number;
+  assign_staff_name?: string;
+  add_time: string;
+  sys_update_time: string;
+}
+
+export interface MyProblemListResponse {
+  total: number;
+  items: ProblemResponse[];
+}
+
+export interface UpdateProblemParams {
+  id: number;
+  problem_title?: string;
+  problem_status?: number;
+  problem_attribution?: number;
+  problem_type?: number;
+  assign_staff_id?: number;
+  note_content_remark?: string;
+}
+
 export interface YesDevAPI {
   // 任务相关
   createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>>;
@@ -406,6 +434,10 @@ export interface YesDevAPI {
 
   // 日报接口
   addOrUpdateDaily(params: AddOrUpdateDailyParams): Promise<YesDevResponse<AddOrUpdateDailyResponse>>;
+
+  // 问题缺陷接口
+  getMyProblem(): Promise<YesDevResponse<MyProblemListResponse>>;
+  updateProblem(params: UpdateProblemParams): Promise<YesDevResponse<void>>;
 }
 
 // -- Global Config Types --

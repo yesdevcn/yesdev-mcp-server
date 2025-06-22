@@ -5,6 +5,7 @@ import { registerProjectTools } from './mcp/tools/project.js';
 import { registerCommonTools } from './mcp/tools/common.js';
 import { registerNeedTools } from './mcp/tools/need.js';
 import { registerDailyReportTools } from './mcp/tools/daily.js';
+import { registerProblemTools } from './mcp/tools/problem.js';
 import dotenv from 'dotenv';
 import { configManager } from './yesdev/config.js';
 
@@ -30,6 +31,7 @@ async function main() {
       registerProjectTools,
       registerNeedTools,
       registerDailyReportTools,
+      registerProblemTools,
     ];
 
     const allTools = new Set<any>();

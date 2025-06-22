@@ -230,7 +230,7 @@ class YesDevAPIImpl implements YesDevAPI {
 
   // 问题缺陷接口
   async getMyProblem(): Promise<YesDevResponse<MyProblemListResponse>> {
-    return this.request<YesDevResponse<MyProblemListResponse>>('POST', 'Platform.WorkBench_WorkBench.GetMyProblem');
+    return this.request<YesDevResponse<MyProblemListResponse>>('POST', 'Platform.Problem_Problem.GetProblemLeftSideMenu');
   }
 
   async updateProblem(params: UpdateProblemParams): Promise<YesDevResponse<void>> {

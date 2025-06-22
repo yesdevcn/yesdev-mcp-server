@@ -381,8 +381,7 @@ export interface ProblemResponse {
 }
 
 export interface MyProblemListResponse {
-  total: number;
-  items: ProblemResponse[];
+  problem_list: ProblemResponse[];
 }
 
 export interface UpdateProblemParams {

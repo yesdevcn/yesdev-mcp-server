@@ -12,7 +12,9 @@ export function registerProblemTools(server: McpServer): Set<string> {
     {
       title: '获取我当前的问题',
       description: '获取指派给我的、待我处理的问题列表',
-      inputSchema: {},
+      inputSchema: {
+        random_string: z.string().optional().describe('Dummy parameter for no-parameter tools'),
+      },
     },
     async () => {
       try {
@@ -21,13 +23,13 @@ export function registerProblemTools(server: McpServer): Set<string> {
           return { content: [{ type: 'text', text: `获取问题列表失败: ${result.msg || '未知错误'}` }], isError: true };
         }
 
-        const { items = [], total = 0 } = result.data;
-        if (items.length === 0) {
+        const { problem_list = [] } = result.data;
+        if (problem_list.length === 0) {
           return { content: [{ type: 'text', text: '你当前没有待处理的问题。' }] };
         }
 
-        let responseText = `### 待你处理的问题 (共 ${total} 个)\n\n`;
-        responseText += items.map(p => {
+        let responseText = `### 待你处理的问题 (共 ${problem_list.length} 个)\n\n`;
+        responseText += problem_list.map(p => {
             const link = `https://www.yesdev.cn/platform/problem/problemDetail?id=${p.id}`;
             const status = configManager.getProblemStatusName(p.problem_status);
             const level = configManager.getProblemLevelName(p.problem_level);

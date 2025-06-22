@@ -39,6 +39,8 @@ import type {
   ProjectNeedListResponse,
   NeedResponse,
   NeedResponseLite,
+  AddOrUpdateDailyParams,
+  AddOrUpdateDailyResponse,
 } from './types.js';
 import { configManager } from './config.js';
 
@@ -217,6 +219,11 @@ class YesDevAPIImpl implements YesDevAPI {
 
   async getSubNeedList(params: { need_id: number }): Promise<YesDevResponse<SubNeedListResponse>> {
     return this.request<YesDevResponse<SubNeedListResponse>>('POST', 'Platform.PRD_Need.GetSubNeedList', params);
+  }
+
+  // 日报接口
+  async addOrUpdateDaily(params: AddOrUpdateDailyParams): Promise<YesDevResponse<AddOrUpdateDailyResponse>> {
+    return this.request<YesDevResponse<AddOrUpdateDailyResponse>>('POST', 'Platform.Daily_Daily.AddOrUpdateDaily', params);
   }
 }
 

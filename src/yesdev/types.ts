@@ -356,6 +356,17 @@ export interface ProjectNeedListResponse {
 
 }
 
+// -- 日报接口类型 --
+export interface AddOrUpdateDailyParams {
+  daily_time: string;
+  content?: string;
+  title: string;
+}
+
+export interface AddOrUpdateDailyResponse {
+  is_update: boolean;
+}
+
 export interface YesDevAPI {
   // 任务相关
   createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>>;
@@ -392,6 +403,9 @@ export interface YesDevAPI {
   queryNeeds(params: QueryNeedsParams): Promise<YesDevResponse<NeedListResponse>>;
   getProjectNeedList(params: { project_id: number, need_status?: string }): Promise<YesDevResponse<ProjectNeedListResponse>>;
   getSubNeedList(params: { need_id: number }): Promise<YesDevResponse<SubNeedListResponse>>;
+
+  // 日报接口
+  addOrUpdateDaily(params: AddOrUpdateDailyParams): Promise<YesDevResponse<AddOrUpdateDailyResponse>>;
 }
 
 // -- Global Config Types --

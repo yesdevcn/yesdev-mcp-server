@@ -262,6 +262,100 @@ export interface UserProfileResponse {
   staff_info: Staff;
 }
 
+// -- 需求接口类型 --
+
+export interface NeedResponse {
+  id: number;
+  need_name: string;
+  need_status: number;
+  need_level: number;
+  charge_staff_name?: string;
+  created_staff_name?: string;
+  project_id?: number;
+  project_name?: string;
+  add_time?: string;
+  sys_update_time?: string;
+  need_content?: string;
+  need_start_date?: string;
+  need_finish_date?: string;
+}
+
+export interface NeedResponseLite {
+  need: NeedResponse;
+}
+
+export interface CreateNeedParams {
+  need_name: string;
+  project_id?: number;
+  need_status?: number;
+  need_start_date?: string;
+  need_content?: string;
+  need_finish_date?: string;
+  need_level?: number;
+  charge_staff_id?: number;
+  from_channel?: string;
+  need_parent_id?: number;
+}
+
+export interface NeedAddResponse {
+  id: number;
+}
+
+export interface UpdateNeedParams {
+  id: number;
+  need_name?: string;
+  project_id?: number;
+  need_status?: number;
+  need_start_date?: string;
+  need_finish_date?: string;
+  need_content?: string;
+  charge_staff_id?: number;
+  need_level?: number;
+  need_parent_id?: number;
+}
+
+export interface QueryNeedsParams {
+  need_name?: string;
+  need_level?: string;
+  project_id?: string;
+  need_status?: string;
+  is_have_project_id?: number;
+  is_assign_staff?: number;
+  charge_staff_ids?: string;
+  created_staff_ids?: string;
+  start_start_time?: string;
+  end_start_time?: string;
+  end_finish_time?: string;
+  start_add_time?: string;
+  end_add_time?: string;
+  start_update_time?: string;
+  end_update_time?: string;
+  page?: number;
+  perpage?: number;
+  order_status?: number;
+  order_status_sort?: number;
+  start_actual_finish_date?: string;
+  end_actual_finish_date?: string;
+  need_parent_id?: string;
+}
+
+export interface NeedListResponse {
+  total: number;
+  items: NeedResponse[];
+}
+
+export interface SubNeedListResponse {
+  total: number;
+  list: NeedResponse[];
+}
+
+export interface ProjectNeedListResponse {
+  list: NeedResponse[];
+  show_product_list?: NeedResponse[];
+  show_task_list?: NeedResponse[];
+
+}
+
 export interface YesDevAPI {
   // 任务相关
   createTask(params: CreateTaskParams): Promise<YesDevResponse<TaskAddResponse>>;
@@ -288,6 +382,16 @@ export interface YesDevAPI {
   searchStaff(params: SearchStaffParams): Promise<YesDevResponse<StaffListResponse>>;
   getWorkgroupList(): Promise<YesDevResponse<WorkgroupListResponse>>;
   getMyProfile(): Promise<YesDevResponse<UserProfileResponse>>;
+
+  // 需求接口
+  createNeed(params: CreateNeedParams): Promise<YesDevResponse<NeedAddResponse>>;
+  updateNeed(params: UpdateNeedParams): Promise<YesDevResponse<void>>;
+  getNeedDetail(params: { id: number }): Promise<YesDevResponse<NeedResponse>>;
+  getNeedDetailLite(params: { id: number }): Promise<YesDevResponse<NeedResponseLite>>;
+  removeNeed(params: { id: number }): Promise<YesDevResponse<void>>;
+  queryNeeds(params: QueryNeedsParams): Promise<YesDevResponse<NeedListResponse>>;
+  getProjectNeedList(params: { project_id: number, need_status?: string }): Promise<YesDevResponse<ProjectNeedListResponse>>;
+  getSubNeedList(params: { id: number }): Promise<YesDevResponse<SubNeedListResponse>>;
 }
 
 // -- Global Config Types --

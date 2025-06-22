@@ -56,6 +56,14 @@ class ConfigManager {
         }
         return '未知状态';
     }
+
+    public getNeedStatusName(status: number): string {
+        return this.config?.alias_list?.NEED_STATUS?.[status]?.name || '未知状态';
+    }
+
+    public getNeedLevelName(level: number): string {
+        return this.config?.alias_list?.NEED_LEVEL?.[level]?.name || '未知优先级';
+    }
 }
 
 const configManager = new ConfigManager();

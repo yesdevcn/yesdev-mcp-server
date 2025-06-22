@@ -29,7 +29,16 @@ import type {
   StaffListResponse,
   WorkgroupListResponse,
   UserProfileResponse,
-  SearchStaffParams
+  SearchStaffParams,
+  CreateNeedParams,
+  NeedAddResponse,
+  UpdateNeedParams,
+  QueryNeedsParams,
+  NeedListResponse,
+  SubNeedListResponse,
+  ProjectNeedListResponse,
+  NeedResponse,
+  NeedResponseLite,
 } from './types.js';
 import { configManager } from './config.js';
 
@@ -86,6 +95,19 @@ class YesDevAPIImpl implements YesDevAPI {
       }
       throw error;
     }
+  }
+
+  // 公共接口
+  async searchStaff(params: SearchStaffParams): Promise<YesDevResponse<StaffListResponse>> {
+    return this.request<YesDevResponse<StaffListResponse>>('POST', 'Platform.Staff.GetOrSearchStaffDropList', params);
+  }
+
+  async getWorkgroupList(): Promise<YesDevResponse<WorkgroupListResponse>> {
+    return this.request<YesDevResponse<WorkgroupListResponse>>('POST', 'Platform.Workgroup.GetWorkgroupDropList');
+  }
+
+  async getMyProfile(): Promise<YesDevResponse<UserProfileResponse>> {
+    return this.request<YesDevResponse<UserProfileResponse>>('POST', 'Platform.User.Profile');
   }
 
   // 1. 创建任务
@@ -164,17 +186,37 @@ class YesDevAPIImpl implements YesDevAPI {
     return this.request<YesDevResponse<GlobalConfig>>('POST', 'Platform.Setting_Setting.Start', params);
   }
 
-  // 公共接口
-  async searchStaff(params: SearchStaffParams): Promise<YesDevResponse<StaffListResponse>> {
-    return this.request<YesDevResponse<StaffListResponse>>('POST', 'Platform.Staff.GetOrSearchStaffDropList', params);
+  // 需求接口
+  async createNeed(params: CreateNeedParams): Promise<YesDevResponse<NeedAddResponse>> {
+    return this.request<YesDevResponse<NeedAddResponse>>('POST', 'Platform.PRD_Need.CreateNewNeed', params);
   }
 
-  async getWorkgroupList(): Promise<YesDevResponse<WorkgroupListResponse>> {
-    return this.request<YesDevResponse<WorkgroupListResponse>>('POST', 'Platform.Workgroup.GetWorkgroupDropList');
+  async updateNeed(params: UpdateNeedParams): Promise<YesDevResponse<void>> {
+    return this.request<YesDevResponse<void>>('POST', 'Platform.PRD_Need.UpdateNeedLite', params);
   }
 
-  async getMyProfile(): Promise<YesDevResponse<UserProfileResponse>> {
-    return this.request<YesDevResponse<UserProfileResponse>>('POST', 'Platform.User.Profile');
+  async getNeedDetail(params: { id: number }): Promise<YesDevResponse<NeedResponse>> {
+    return this.request<YesDevResponse<NeedResponse>>('POST', 'Platform.PRD_Need.GetNeedDetail', params);
+  }
+
+  async getNeedDetailLite(params: { id: number }): Promise<YesDevResponse<NeedResponseLite>> {
+    return this.request<YesDevResponse<NeedResponseLite>>('POST', 'Platform.PRD_Need.GetNeedDetailLite', params);
+  }
+
+  async removeNeed(params: { id: number }): Promise<YesDevResponse<void>> {
+    return this.request<YesDevResponse<void>>('POST', 'Platform.PRD_Need.RemoveNeed', params);
+  }
+
+  async queryNeeds(params: QueryNeedsParams): Promise<YesDevResponse<NeedListResponse>> {
+    return this.request<YesDevResponse<NeedListResponse>>('POST', 'Platform.PRD_Need.GetNeedListMoreWhere', params);
+  }
+
+  async getProjectNeedList(params: { project_id: number, need_status?: string }): Promise<YesDevResponse<ProjectNeedListResponse>> {
+    return this.request<YesDevResponse<ProjectNeedListResponse>>('POST', 'Platform.PRD_Need.GetProjectNeedListCanGroup', params);
+  }
+
+  async getSubNeedList(params: { id: number }): Promise<YesDevResponse<SubNeedListResponse>> {
+    return this.request<YesDevResponse<SubNeedListResponse>>('POST', 'Platform.PRD_Need.GetSubNeedList', params);
   }
 }
 

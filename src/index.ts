@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { registerTaskTools } from './mcp/tools/task.js';
 import { registerProjectTools } from './mcp/tools/project.js';
 import { registerCommonTools } from './mcp/tools/common.js';
+import { registerNeedTools } from './mcp/tools/need.js';
 import dotenv from 'dotenv';
 import { configManager } from './yesdev/config.js';
 
@@ -23,7 +24,8 @@ async function main() {
     const taskTools = registerTaskTools(server);
     const projectTools = registerProjectTools(server);
     const commonTools = registerCommonTools(server);
-    const allTools = new Set([...taskTools, ...projectTools, ...commonTools]);
+    const needTools = registerNeedTools(server);
+    const allTools = new Set([...taskTools, ...projectTools, ...commonTools, ...needTools]);
 
     const transport = new StdioServerTransport();
     server.connect(transport);

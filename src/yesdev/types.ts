@@ -386,12 +386,12 @@ export interface YesDevAPI {
   // 需求接口
   createNeed(params: CreateNeedParams): Promise<YesDevResponse<NeedAddResponse>>;
   updateNeed(params: UpdateNeedParams): Promise<YesDevResponse<void>>;
-  getNeedDetail(params: { id: number }): Promise<YesDevResponse<NeedResponse>>;
+  getNeedDetail(params: { id: number }): Promise<YesDevResponse<{ need: NeedResponse }>>;
   getNeedDetailLite(params: { id: number }): Promise<YesDevResponse<NeedResponseLite>>;
   removeNeed(params: { id: number }): Promise<YesDevResponse<void>>;
   queryNeeds(params: QueryNeedsParams): Promise<YesDevResponse<NeedListResponse>>;
   getProjectNeedList(params: { project_id: number, need_status?: string }): Promise<YesDevResponse<ProjectNeedListResponse>>;
-  getSubNeedList(params: { id: number }): Promise<YesDevResponse<SubNeedListResponse>>;
+  getSubNeedList(params: { need_id: number }): Promise<YesDevResponse<SubNeedListResponse>>;
 }
 
 // -- Global Config Types --

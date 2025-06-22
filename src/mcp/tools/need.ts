@@ -104,7 +104,8 @@ export function registerNeedTools(server: McpServer): Set<string> {
         if (result.ret !== 200 || !result.data) {
           return { content: [{ type: 'text', text: `获取需求详情失败: ${result.msg || '未知错误'}` }], isError: true };
         }
-        return { content: [{ type: 'text', text: formatNeed(result.data) }] };
+        const needData = (result.data as any).need || result.data;
+        return { content: [{ type: 'text', text: formatNeed(needData) }] };
       } catch (error: any) {
         return { content: [{ type: 'text', text: `获取需求详情失败: ${error.message}` }], isError: true };
       }
@@ -253,7 +254,7 @@ export function registerNeedTools(server: McpServer): Set<string> {
     },
     async ({ id }) => {
       try {
-        const result = await yesdevAPI.getSubNeedList({ id });
+        const result = await yesdevAPI.getSubNeedList({ need_id: id });
         if (result.ret !== 200 || !result.data) {
           return { content: [{ type: 'text', text: `获取子需求列表失败: ${result.msg || '未知错误'}` }], isError: true };
         }

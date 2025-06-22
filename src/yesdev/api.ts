@@ -195,8 +195,8 @@ class YesDevAPIImpl implements YesDevAPI {
     return this.request<YesDevResponse<void>>('POST', 'Platform.PRD_Need.UpdateNeedLite', params);
   }
 
-  async getNeedDetail(params: { id: number }): Promise<YesDevResponse<NeedResponse>> {
-    return this.request<YesDevResponse<NeedResponse>>('POST', 'Platform.PRD_Need.GetNeedDetail', params);
+  async getNeedDetail(params: { id: number }): Promise<YesDevResponse<{ need: NeedResponse }>> {
+    return this.request<YesDevResponse<{ need: NeedResponse }>>('POST', 'Platform.PRD_Need.GetNeedDetail', params);
   }
 
   async getNeedDetailLite(params: { id: number }): Promise<YesDevResponse<NeedResponseLite>> {
@@ -215,7 +215,7 @@ class YesDevAPIImpl implements YesDevAPI {
     return this.request<YesDevResponse<ProjectNeedListResponse>>('POST', 'Platform.PRD_Need.GetProjectNeedListCanGroup', params);
   }
 
-  async getSubNeedList(params: { id: number }): Promise<YesDevResponse<SubNeedListResponse>> {
+  async getSubNeedList(params: { need_id: number }): Promise<YesDevResponse<SubNeedListResponse>> {
     return this.request<YesDevResponse<SubNeedListResponse>>('POST', 'Platform.PRD_Need.GetSubNeedList', params);
   }
 }

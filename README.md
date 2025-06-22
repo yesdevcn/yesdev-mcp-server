@@ -23,8 +23,15 @@
 
 ## 🎯 如何使用？
 
-免费注册 [YesDev项目管理工具](https://www.yesdev.cn/) 后 [获取你的YESDEV_ACCESS_TOKEN令牌](https://www.yesdev.cn/platform/account/accountInfo)。
+你可以通过 npm 或 yarn 在全局安装本工具：
 
+```bash
+npm install -g @yesdevcn/yesdev-mcp-server
+```
+
+### 2. 配置
+
+> 免费注册 [YesDev项目管理工具](https://www.yesdev.cn/) 后 [获取你的YESDEV_ACCESS_TOKEN令牌](https://www.yesdev.cn/platform/account/accountInfo)。
 
 ### ⚡ Cursor MCP 配置
 
@@ -187,34 +194,3 @@ YesDev MCP Server 已启动
 
 - 在 [GitHub Issues](https://github.com/yesdevcn/yesdev-mcp-server/issues) 中提出您的问题。
 
-## 快速开始
-
-### 1. 安装
-
-你可以通过 npm 或 yarn 在全局安装本工具：
-
-```bash
-npm install -g @yesdevcn/yesdev-mcp-server
-```
-
-### 2. 配置
-
-#### 环境变量
-
-将项目根目录下的 `.env.example` 文件复制一份并重命名为 `.env`，然后填入你的 `YESDEV_ACCESS_TOKEN`。
-
-```
-YESDEV_ACCESS_TOKEN=your_personal_access_token
-```
-
-#### MCP 客户端配置
-
-本项目提供了一个 `mcp.json.example` 文件，其中包含了所有已实现的工具列表。
-
-你可以将此文件内容复制到你的 Cursor 或其他 MCP 客户端的配置中，以便与此 MCP Server 进行交互。
-
-### 3. 启动服务
-
-```bash
-yesdev-mcp-server
-```

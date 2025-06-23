@@ -182,6 +182,7 @@ YesDev MCP Server 已启动
 
 ## 🔗 相关项目
 
+- 📦 [YesDev MCP Server 当前项目](https://github.com/yesdevcn/yesdev-mcp-server)
 - 📦 [MCP TS-sdk](https://github.com/modelcontextprotocol/typescript-sdk)
 - 📦 [YesDev接口文档](https://www.yesdev.cn/docs.php?keyword=platform.)
 - 📚 [Model Context Protocol](https://github.com/modelcontextprotocol/modelcontextprotocol)

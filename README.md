@@ -64,13 +64,13 @@ $ chmod +x /Users/dogstar/.nvm/versions/node/v18.20.4/bin/yesdev-mcp-server
 > 请帮我把我今天做的新系统开发，在yesdev同步创建一个新项目。  
 > 然后，把我做的功能、界面需求，分别创建对应的需求。  
 > 最后，帮我录入对应的需求任务和工时。  
-![](/images/snapshot_cursor_usage.png)  
+![](/img/snapshot_cursor_usage.png)  
 
 调用MCP工具：  
-![](/images/snapshot_cursor_output.png) 
+![](/img/snapshot_cursor_output.png) 
 
 最后，AI在YesDev创建的新项目、需求、任务和工时：  
-![](/images/snapshot_yesdev_project.png)   
+![](/img/snapshot_yesdev_project.png)   
 
 
 ### 💡 常用提示词

@@ -29,6 +29,14 @@
 npm install -g @yesdevcn/yesdev-mcp-server
 ```
 
+查看你本地后安装的目录位置，确保有执行权限：  
+```bash
+$ which yesdev-mcp-server  
+/Users/dogstar/.nvm/versions/node/v18.20.4/bin/yesdev-mcp-server
+
+$ chmod +x /Users/dogstar/.nvm/versions/node/v18.20.4/bin/yesdev-mcp-server
+```
+
 ### 2. 配置
 
 > 免费注册 [YesDev项目管理工具](https://www.yesdev.cn/) 后 [获取你的YESDEV_ACCESS_TOKEN令牌](https://www.yesdev.cn/platform/account/accountInfo)。
@@ -42,7 +50,7 @@ npm install -g @yesdevcn/yesdev-mcp-server
   "mcpServers": {
     "yesdev-mcp-server": {
       "command": "node",
-      "args": ["@yesdevcn/yesdev-mcp-server"],
+      "args": ["/path/to/bin/yesdev-mcp-server"],
       "env": {
         "YESDEV_ACCESS_TOKEN": "你的YesDev令牌"
       }
@@ -50,6 +58,7 @@ npm install -g @yesdevcn/yesdev-mcp-server
   }
 }
 ```
+> 对于上面的路径，更换成你本地的安装路径，使用前面的 ```which yesdev-mcp-server``` 可获得。  
 
 ### 💡 常用提示词
 
@@ -57,6 +66,7 @@ npm install -g @yesdevcn/yesdev-mcp-server
  + 📝 请帮我创建一个新任务，并登记我今天的开发任务内容和工时到YesDev  
  + 📋 我今天有哪些YesDev任务？
  + 📅 帮我写日报到YesDev
+ + 📅 请帮我把今天的开发工作，放到一个新项目，并帮我录入好对应的需求和任务工时。
 
 ## 🛠️ MCP开发
 
